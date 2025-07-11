@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'reset_password_page.dart';
-import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'dart:convert';
+import 'package:desktop_multi_window/desktop_multi_window.dart';
+import 'package:window_manager/window_manager.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,6 +13,20 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _savePassword = false;
+
+    @override
+  void initState() {
+    super.initState();
+    _setupWindow();
+  }
+
+  Future<void> _setupWindow() async {
+    await windowManager.ensureInitialized();
+    await windowManager.setSize(const Size(280, 420));
+    await windowManager.setMinimumSize(const Size(280, 420));
+    await windowManager.setMaximumSize(const Size(280, 420));
+    await windowManager.center();
+  }
 
   void _launchHomePage() async {
     final url = Uri.parse('http://www.mobilitysystems.kr');
@@ -225,14 +239,13 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.only(bottom: 5),
               child: TextButton(
                 onPressed: () async {
-                  // 0.2.1에서는 entrypoint 대신 args로 분기!
-                  final window = await DesktopMultiWindow.createWindow(
-                    jsonEncode(['reset_password']),
-                  );
-                  window
-                    ..setTitle('비밀번호 재설정')
-                    ..show();
-                },
+    final window = await DesktopMultiWindow.createWindow(
+      jsonEncode(['reset_password']),
+    );
+    window
+      ..setTitle('비밀번호 재설정')
+      ..show();
+  },
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   minimumSize: const Size(0, 28),

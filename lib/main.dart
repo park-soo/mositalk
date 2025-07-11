@@ -1,31 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:window_manager/window_manager.dart';
-import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'login_page.dart';
 import 'reset_password_page.dart';
+import 'dart:convert';
 
-void main(List<String> args) async {
+void main(List<String> args) {
   WidgetsFlutterBinding.ensureInitialized();
-  await windowManager.ensureInitialized();
 
-  if (args.isNotEmpty && args.first == 'reset_password') {
-    runApp(const ResetPasswordApp());
-    return;
+  bool isResetPassword = false;
+  if (args.length > 2) {
+    try {
+      final data = jsonDecode(args[2]);
+      if (data is List && data.isNotEmpty && data[0] == 'reset_password') {
+        isResetPassword = true;
+      }
+    } catch (e) {
+      // ignore
+    }
   }
 
-  WindowOptions windowOptions = const WindowOptions(
-    size: Size(280, 420),
-    center: true,
-    minimumSize: Size(280, 420),
-    maximumSize: Size(280, 420),
-    title: 'Mositalk',
-  );
-  windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.show();
-    await windowManager.focus();
-  });
-
-  runApp(const MyApp());
+  if (isResetPassword) {
+    runApp(const ResetPasswordApp());
+  } else {
+    runApp(const MyApp());
+  }
 }
 
 class MyApp extends StatelessWidget {
